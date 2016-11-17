@@ -94,6 +94,9 @@
  '(org-table-use-standard-references nil)
  '(org-time-stamp-rounding-minutes (quote (10 10)))
  '(org-use-speed-commands t)
+ '(package-selected-packages
+   (quote
+    (zoom-frm yaml-mode xref-js2 ws-butler wgrep-helm web-mode visible-mark undo-tree smartscan slack skeletor runner refine prodigy powerline pos-tip pillar pdf-tools pass paren-face paredit ox-twbs orgtbl-show-header org-vcard org-caldav nix-mode nameless markdown-preview-mode magithub less-css-mode lentic json-mode js2-refactor jade hydra helm-projectile helm-descbinds helm-ag haskell-mode guide-key grunt git-timemachine git-auto-commit-mode flycheck-package flycheck-cask fill-column-indicator feature-mode expand-region ethan-wspace emacs-source-directory editorconfig drag-stuff discover dired-toggle-sudo dired-imenu diff-hl debbugs csharp-mode counsel company-tern camcorder buttercup beacon auctex assess anzu all-the-icons aggressive-indent ag ace-window ace-link unify-opening jabber)))
  '(powerline-display-buffer-size nil)
  '(proced-filter (quote all))
  '(projectile-cache-file "/home/cassou/.emacs.d/cache/projectile.cache")
@@ -140,6 +143,7 @@
  '(undo-tree-history-directory-alist (quote (("." . "~/.emacs.d/.undo-tree/"))))
  '(undo-tree-mode-lighter "")
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
+ '(use-package-always-pin "melpa-stable")
  '(use-package-enable-imenu-support t)
  '(user-full-name "Damien Cassou")
  '(user-mail-address "damien.cassou@gmail.com")
@@ -152,9 +156,15 @@
  '(winner-mode t nil (winner) "Use C-c <left|right> to go back to previous windows configuration")
  '(zoom-frame/buffer (quote frame)))
 
+(require 'package) ;; You might already have this line
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
 
 (eval-when-compile
+  (add-to-list 'load-path "~/.emacs.d/packages/use-package")
   (require 'use-package)
   (setq use-package-verbose (null byte-compile-current-file)))
 
@@ -262,6 +272,7 @@ are visible."
 (unbind-key "M->")
 
 (use-package undo-tree
+  :ensure t
   :init
   (progn
     (global-undo-tree-mode))
@@ -270,6 +281,7 @@ are visible."
     (define-key undo-tree-map (kbd "C-x r") nil)))
 
 (use-package ethan-wspace
+  :ensure t
   :disabled t
   :diminish ethan-wspace-mode
   :demand t
@@ -283,9 +295,9 @@ are visible."
   :bind (("C-x C-j" . dired-jump))
   :config
   (progn
-    (use-package runner)
+    (use-package runner :ensure t)
     (use-package dired-x)
-    (use-package dired-imenu :demand t)
+    (use-package dired-imenu :ensure t :demand t)
 
     (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
 
@@ -359,6 +371,7 @@ are visible."
     (setq-default ediff-auto-refine 'on)))
 
 (use-package magit
+  :ensure t
   :diminish (magit-auto-revert-mode magit-wip-after-save-mode magit-wip-after-apply-mode magit-wip-affter-change)
   :bind (("C-x g" . magit-status) ("C-x G" . magit-dispatch-popup))
   :config
@@ -388,6 +401,7 @@ are visible."
        (switch-to-buffer-other-window (or buffer "*info*"))))))
 
 (use-package ace-link
+  :ensure t
   :init
   (progn
     (ace-link-setup-default)))
@@ -452,10 +466,16 @@ are visible."
   :diminish text-scale-mode)
 
 (use-package flycheck
+  :ensure t
   :diminish flycheck-mode
   :init
   (progn
-    (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)))
+    (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+    (use-package flycheck-cask
+      :ensure t
+      :init
+      (progn
+        (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)))))
 
 (use-package org
   :defer t
@@ -526,9 +546,10 @@ are visible."
 
     (add-to-list 'org-file-apps '("\\.png\\'" . default))
 
-    (use-package ox-twbs)))
+    (use-package ox-twbs :ensure t)))
 
 (use-package org-caldav
+  :ensure t
   :bind (("C-. o S"   . org-caldav-sync))
   :config
   (progn
@@ -581,6 +602,7 @@ are visible."
          ((> decimal 0.5) (1+ (ftruncate num))))))))
 
 (use-package winner
+  :ensure t
   :defer t
   :init
   (progn
@@ -615,6 +637,7 @@ able to type <C-c left left left> to undo 3 times whereas it was
     (bind-key "C-c <left>" 'winner:initial-undo  winner-mode-map)))
 
 (use-package drag-stuff
+  :ensure t
   :diminish drag-stuff-mode
   :init
   (progn
@@ -624,9 +647,11 @@ able to type <C-c left left left> to undo 3 times whereas it was
     (add-to-list 'drag-stuff-except-modes 'rebase-mode)))
 
 (use-package expand-region
+  :ensure t
   :bind ("C-x =" . er/expand-region))
 
 (use-package multiple-cursors
+  :ensure t
   :bind (("C-S-c C-S-c" . mc/edit-lines)
          ("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)
@@ -639,6 +664,7 @@ able to type <C-c left left left> to undo 3 times whereas it was
          ("C-x 4 '" . shell-switcher-switch-buffer-other-window)))
 
 (use-package guide-key
+  :ensure t
   :diminish guide-key-mode
   :config
   (progn
@@ -651,19 +677,23 @@ able to type <C-c left left left> to undo 3 times whereas it was
     (guide-key-mode 1)))
 
 (use-package discover
+  :ensure t
   :init
   (progn
     (global-discover-mode 1)))
 
 (use-package pillar
+  :ensure t
   :mode ("\\.\\(pier\\|pillar\\)\\'" . pillar-mode))
 
 (use-package projectile
+  :ensure t
   :diminish projectile-mode
   :init
   (progn
     (projectile-global-mode)
     (use-package helm-projectile
+      :ensure t
       :init
       (progn
         (helm-projectile-on)))))
@@ -819,6 +849,7 @@ Designed to be called before `message-send-and-exit'."
   (imagemagick-register-types))
 
 (use-package paredit
+  :ensure t
   :diminish paredit-mode
   :bind (:map paredit-mode-map
               ("M-s" . nil))
@@ -836,6 +867,7 @@ Designed to be called before `message-send-and-exit'."
   :diminish auto-revert-mode)
 
 (use-package smartscan
+  :ensure t
   :defer t
   :init
   (progn
@@ -843,6 +875,7 @@ Designed to be called before `message-send-and-exit'."
     (add-hook 'pillar-mode-hook 'smartscan-mode)))
 
 (use-package zoom-frm
+  :ensure t
   :bind (("C-x C-+" . zoom-in/out)
          ("C-x C--" . zoom-in/out)
          ("C-x C-=" . zoom-in/out)
@@ -851,11 +884,13 @@ Designed to be called before `message-send-and-exit'."
          ("<C-mouse-5>" . zoom-out)))
 
 (use-package visible-mark
+  :ensure t
   :config
   (progn
     (global-visible-mark-mode 1)))
 
 (use-package paren-face
+  :ensure t
   :init
   (progn
     (global-paren-face-mode)))
@@ -868,6 +903,7 @@ Designed to be called before `message-send-and-exit'."
               ("C-l" . find-library)))
 
 (use-package anzu
+  :ensure t
   :diminish anzu-mode
   :init
   (progn
@@ -878,6 +914,7 @@ Designed to be called before `message-send-and-exit'."
     (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)))
 
 (use-package aggressive-indent
+  :ensure t
   :diminish aggressive-indent-mode
   :config
   (progn
@@ -885,6 +922,7 @@ Designed to be called before `message-send-and-exit'."
     (add-hook 'lisp-mode-hook #'aggressive-indent-mode)))
 
 (use-package helm
+  :ensure t
   :diminish helm-mode
   :bind (("M-x"     . helm-M-x)
          ("M-y"     . helm-show-kill-ring)
@@ -926,6 +964,7 @@ Designed to be called before `message-send-and-exit'."
     (helm-mode 1)))
 
 (use-package password-store
+  :ensure t
   :config
   (progn
     (setq password-store-password-length 16)))
@@ -938,6 +977,7 @@ Designed to be called before `message-send-and-exit'."
     (setq auth-sources '(password-store))))
 
 (use-package ace-window
+  :ensure t
   :bind* (("M-o" . ace-window))
   :config
   (progn
@@ -945,6 +985,7 @@ Designed to be called before `message-send-and-exit'."
     (setq aw-keys avy-keys)))
 
 (use-package avy
+  :ensure t
   :bind* (("C-," . avy-goto-char-2))
   ;; dont :bind* this as this would override `M-g` in Projectile
   ;; (helm-projectile-vc):
@@ -964,9 +1005,12 @@ Designed to be called before `message-send-and-exit'."
   (progn
     (beginend-setup-all)))
 
-(use-package vdirel
-  :load-path "packages/vdirel"
-  :bind (("C-. c" . vdirel-helm-select-email)))
+(use-package org-vcard
+  :ensure t)
+
+;; (use-package vdirel
+;;   :load-path "packages/vdirel"
+;;   :bind (("C-. c" . vdirel-helm-select-email)))
 
 (use-package help
   :defer t
@@ -982,6 +1026,7 @@ Designed to be called before `message-send-and-exit'."
               help-mode-map)))
 
 (use-package nameless
+  :ensure t
   :diminish nameless-mode
   :config
   (progn
@@ -993,6 +1038,7 @@ Designed to be called before `message-send-and-exit'."
   (occur "[^[:ascii:]]"))
 
 (use-package beacon
+  :ensure t
   :diminish beacon-mode
   :init
   (progn
@@ -1006,6 +1052,7 @@ Designed to be called before `message-send-and-exit'."
   :diminish subword-mode)
 
 (use-package company
+  :ensure t
   :diminish company-mode
   :init
   (progn
@@ -1031,6 +1078,7 @@ Designed to be called before `message-send-and-exit'."
   :load-path "packages/ftgp")
 
 (use-package jabber
+  :ensure t
   :bind
   (("C-. j c" . jabber-connect-all)
    ("C-. j d" . jabber-disconnect)
@@ -1057,8 +1105,6 @@ Designed to be called before `message-send-and-exit'."
 
       (jabber-connect-all))))
 
-(use-package erc)
-
 (use-package slack
   :commands (slack-start)
   :init
@@ -1077,11 +1123,13 @@ Designed to be called before `message-send-and-exit'."
      :subscribed-channels '(general development french_fuckers stockholm-food teamcity))))
 
 (use-package diff-hl
+  :ensure t
   :init
   (progn
     (add-hook 'prog-mode-hook #'diff-hl-mode)))
 
 (use-package yasnippet
+  :ensure t
   :diminish yas-minor-mode
   :config
   (progn
@@ -1090,12 +1138,14 @@ Designed to be called before `message-send-and-exit'."
     (yas-reload-all)))
 
 (use-package json-mode
+  :ensure t
   :config
   (progn
     (setq indent-tabs-mode nil)
     (setq json-reformat:indent-width 2)))
 
 (use-package ws-butler
+  :ensure t
   :diminish ws-butler-mode
   :init
   (progn
