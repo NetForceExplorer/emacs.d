@@ -27,7 +27,6 @@
  '(electric-pair-mode t)
  '(enable-local-variables :all)
  '(enable-recursive-minibuffers t)
- '(epg-gpg-program "/home/cassou/.nix-profile/bin/gpg2")
  '(erc-autojoin-channels-alist (quote (("freenode.net" "#emacs" "#nixos"))))
  '(erc-nick "DamienCassou")
  '(eval-expression-print-length 20)
@@ -167,113 +166,115 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; (eval-when-compile
-;;   (add-to-list 'load-path "~/.emacs.d/packages/use-package")
-;;   (require 'use-package)
-;;   (setq use-package-verbose (null byte-compile-current-file)))
+;; Do that when you want to install packages of
+;; `package-selected-packages':
+;;
+;; (package-install-selected-packages)
 
-;; (defun set-selected-frame-dark ()
-;;   (interactive)
-;;   (let ((frame-name (cdr (assq 'name (frame-parameters (selected-frame))))))
-;;     (call-process-shell-command
-;;      (format
-;;       "xprop -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT 'dark' -name '%s'"
-;;       frame-name))))
+(require 'use-package)
 
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/packages/zerodark-theme")
+(defun set-selected-frame-dark ()
+  (interactive)
+  (let ((frame-name (cdr (assq 'name (frame-parameters (selected-frame))))))
+    (call-process-shell-command
+     (format
+      "xprop -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT 'dark' -name '%s'"
+      frame-name))))
 
-;; (defun my:setup-frame ()
-;;   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
-;;   (when (window-system)
-;;     (ignore-errors
-;;       (load-theme 'zerodark)
-;;       (zerodark-setup-modeline-format-alt))
-;;     (set-selected-frame-dark)
-;;     (set-face-attribute 'default nil :height 115 :family "Fira Mono")))
+(add-to-list 'custom-theme-load-path "~/.emacs.d/packages/zerodark-theme")
 
-;; (if (daemonp)
-;;     (add-hook 'after-make-frame-functions
-;;               (lambda (frame)
-;;                 (select-frame frame)
-;;                 (my:setup-frame)))
-;;   (my:setup-frame))
+(defun my:setup-frame ()
+  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+  (when (window-system)
+    (ignore-errors
+      (load-theme 'zerodark)
+      (zerodark-setup-modeline-format-alt))
+    (set-selected-frame-dark)
+    (set-face-attribute 'default nil :height 115 :family "Fira Mono")))
 
-;; (defun suspend-on-tty-only ()
-;;   (interactive)
-;;   (unless window-system
-;;     (suspend-frame)))
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (select-frame frame)
+                (my:setup-frame)))
+  (my:setup-frame))
 
-;; (bind-key "C-x C-z" 'suspend-on-tty-only)
+(defun suspend-on-tty-only ()
+  (interactive)
+  (unless window-system
+    (suspend-frame)))
 
-;; (add-to-list 'default-frame-alist '(cursor-type bar . 3))
+(bind-key "C-x C-z" 'suspend-on-tty-only)
 
-;; ;; Make all "yes or no" prompts show "y or n" instead
-;; (fset 'yes-or-no-p 'y-or-n-p)
+(add-to-list 'default-frame-alist '(cursor-type bar . 3))
 
-;; (bind-key "<f5>" 'comment-region)
+;; Make all "yes or no" prompts show "y or n" instead
+(fset 'yes-or-no-p 'y-or-n-p)
 
-;; ;; Replace `just-one-space' by the more advanced `cycle-spacing'.
-;; (bind-key "M-SPC" #'cycle-spacing)
+(bind-key "<f5>" 'comment-region)
 
-;; (defun my-join-line ()
-;;   (interactive)
-;;   (join-line -1))
+;; Replace `just-one-space' by the more advanced `cycle-spacing'.
+(bind-key "M-SPC" #'cycle-spacing)
 
-;; (bind-key "M-j" 'my-join-line)
+(defun my-join-line ()
+  (interactive)
+  (join-line -1))
 
-;; (bind-key "C-x k" #'kill-this-buffer)
+(bind-key "M-j" 'my-join-line)
 
-;; (defun toggle-window-split ()
-;;   "Swap between horizontal and vertical separation when 2 frames
-;; are visible."
-;;   (interactive)
-;;   (if (= (count-windows) 2)
-;;       (let* ((this-win-buffer (window-buffer))
-;;              (next-win-buffer (window-buffer (next-window)))
-;;              (this-win-edges (window-edges (selected-window)))
-;;              (next-win-edges (window-edges (next-window)))
-;;              (this-win-2nd (not (and (<= (car this-win-edges)
-;;                                          (car next-win-edges))
-;;                                      (<= (cadr this-win-edges)
-;;                                          (cadr next-win-edges)))))
-;;              (splitter
-;;               (if (= (car this-win-edges)
-;;                      (car (window-edges (next-window))))
-;;                   'split-window-horizontally
-;;                 'split-window-vertically)))
-;;         (delete-other-windows)
-;;         (let ((first-win (selected-window)))
-;;           (funcall splitter)
-;;           (if this-win-2nd (other-window 1))
-;;           (set-window-buffer (selected-window) this-win-buffer)
-;;           (set-window-buffer (next-window) next-win-buffer)
-;;           (select-window first-win)
-;;           (if this-win-2nd (other-window 1))))))
+(bind-key "C-x k" #'kill-this-buffer)
 
-;; (define-key ctl-x-4-map "t" 'toggle-window-split)
+(defun toggle-window-split ()
+  "Swap between horizontal and vertical separation when 2 frames
+are visible."
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 
-;; (define-prefix-command 'endless/toggle-map)
-;; (setq endless/toggle-prefix "C-. t")
-;; (bind-key endless/toggle-prefix 'endless/toggle-map)
+(define-key ctl-x-4-map "t" 'toggle-window-split)
 
-;; (bind-key "d" 'toggle-debug-on-error endless/toggle-map)
+(define-prefix-command 'endless/toggle-map)
+(setq endless/toggle-prefix "C-. t")
+(bind-key endless/toggle-prefix 'endless/toggle-map)
 
-;; (bind-key "C-x 8 <S-right>" (lambda () (interactive) (insert-char ?→))) ; rightwards arrow
-;; (bind-key "C-x 8 <right>" (lambda () (interactive) (insert-char ?⇒))) ; rightwards double arrow
+(bind-key "d" 'toggle-debug-on-error endless/toggle-map)
 
-;; (bind-key "C-x 8 <S-left>" (lambda () (interactive) (insert-char ?←))) ; leftwards arrow
-;; (bind-key "C-x 8 <left>" (lambda () (interactive) (insert-char ?⇐))) ; leftwards double arrow
+(bind-key "C-x 8 <S-right>" (lambda () (interactive) (insert-char ?→))) ; rightwards arrow
+(bind-key "C-x 8 <right>" (lambda () (interactive) (insert-char ?⇒))) ; rightwards double arrow
 
-;; (bind-key "C-x 8 <S-up>" (lambda () (interactive) (insert-char ?↑))) ; upwards arrow
-;; (bind-key "C-x 8 <up>" (lambda () (interactive) (insert-char ?⇑))) ; upwards double arrow
+(bind-key "C-x 8 <S-left>" (lambda () (interactive) (insert-char ?←))) ; leftwards arrow
+(bind-key "C-x 8 <left>" (lambda () (interactive) (insert-char ?⇐))) ; leftwards double arrow
 
-;; (bind-key "C-x 8 <S-down>" (lambda () (interactive) (insert-char ?↓))) ; downwards arrow
-;; (bind-key "C-x 8 <down>" (lambda () (interactive) (insert-char ?⇓))) ; rightwards double arrow
+(bind-key "C-x 8 <S-up>" (lambda () (interactive) (insert-char ?↑))) ; upwards arrow
+(bind-key "C-x 8 <up>" (lambda () (interactive) (insert-char ?⇑))) ; upwards double arrow
 
-;; (bind-key "<S-left>" #'beginning-of-buffer)
-;; (bind-key "<S-right>" #'end-of-buffer)
-;; (unbind-key "M-<")
-;; (unbind-key "M->")
+(bind-key "C-x 8 <S-down>" (lambda () (interactive) (insert-char ?↓))) ; downwards arrow
+(bind-key "C-x 8 <down>" (lambda () (interactive) (insert-char ?⇓))) ; rightwards double arrow
+
+(bind-key "<S-left>" #'beginning-of-buffer)
+(bind-key "<S-right>" #'end-of-buffer)
+(unbind-key "M-<")
+(unbind-key "M->")
 
 ;; (use-package ethan-wspace
 ;;   :ensure t
