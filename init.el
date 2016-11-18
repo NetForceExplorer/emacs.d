@@ -352,6 +352,7 @@ are visible."
 (unbind-key "M->")
 
 (use-package undo-tree
+  :if (package-installed-p 'undo-tree)
   :init
   (progn
     (global-undo-tree-mode))
@@ -524,11 +525,13 @@ are visible."
   :diminish text-scale-mode)
 
 (use-package flycheck
+  :if (package-installed-p 'flycheck)
   :diminish flycheck-mode
   :init
   (progn
     (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
     (use-package flycheck-cask
+      :if (package-installed-p 'flycheck-cask)
       :init
       (progn
         (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)))))
@@ -657,6 +660,7 @@ are visible."
          ((> decimal 0.5) (1+ (ftruncate num))))))))
 
 (use-package winner
+  :if (package-installed-p 'winner)
   :defer t
   :init
   (progn
@@ -691,6 +695,7 @@ able to type <C-c left left left> to undo 3 times whereas it was
     (bind-key "C-c <left>" 'winner:initial-undo  winner-mode-map)))
 
 (use-package drag-stuff
+  :if (package-installed-p 'drag-stuff)
   :diminish drag-stuff-mode
   :init
   (progn
@@ -727,16 +732,19 @@ able to type <C-c left left left> to undo 3 times whereas it was
     (guide-key-mode 1)))
 
 (use-package discover
+  :if (package-installed-p 'discover)
   :init
   (progn
     (global-discover-mode 1)))
 
 (use-package projectile
+  :if (package-installed-p 'projectile)
   :diminish projectile-mode
   :init
   (progn
     (projectile-global-mode)
     (use-package helm-projectile
+      :if (package-installed-p 'helm-projectile)
       :init
       (progn
         (helm-projectile-on)))))
@@ -892,6 +900,7 @@ Designed to be called before `message-send-and-exit'."
   (imagemagick-register-types))
 
 (use-package paredit
+  :if (package-installed-p 'paredit)
   :diminish paredit-mode
   :bind (:map paredit-mode-map
               ("M-s" . nil))
@@ -909,6 +918,7 @@ Designed to be called before `message-send-and-exit'."
   :diminish auto-revert-mode)
 
 (use-package smartscan
+  :if (package-installed-p 'smartscan)
   :defer t
   :init
   (progn
@@ -929,6 +939,7 @@ Designed to be called before `message-send-and-exit'."
     (global-visible-mark-mode 1)))
 
 (use-package paren-face
+  :if (package-installed-p 'paren-face)
   :init
   (progn
     (global-paren-face-mode)))
@@ -941,6 +952,7 @@ Designed to be called before `message-send-and-exit'."
               ("C-l" . find-library)))
 
 (use-package anzu
+  :if (package-installed-p 'anzu)
   :diminish anzu-mode
   :init
   (progn
@@ -958,6 +970,7 @@ Designed to be called before `message-send-and-exit'."
     (add-hook 'lisp-mode-hook #'aggressive-indent-mode)))
 
 (use-package helm
+  :if (package-installed-p 'helm)
   :diminish helm-mode
   :bind (("M-x"     . helm-M-x)
          ("M-y"     . helm-show-kill-ring)
@@ -1066,6 +1079,7 @@ Designed to be called before `message-send-and-exit'."
   (occur "[^[:ascii:]]"))
 
 (use-package beacon
+  :if (package-installed-p 'beacon)
   :diminish beacon-mode
   :init
   (progn
@@ -1079,6 +1093,7 @@ Designed to be called before `message-send-and-exit'."
   :diminish subword-mode)
 
 (use-package company
+  :if (package-installed-p 'company)
   :diminish company-mode
   :init
   (progn
@@ -1105,6 +1120,7 @@ Designed to be called before `message-send-and-exit'."
 
 (use-package jabber
   :disabled t
+  :if (package-installed-p 'jabber)
   :bind
   (("C-. j c" . jabber-connect-all)
    ("C-. j d" . jabber-disconnect)
@@ -1149,6 +1165,7 @@ Designed to be called before `message-send-and-exit'."
 ;;      :subscribed-channels '(general development french_fuckers stockholm-food teamcity))))
 
 (use-package diff-hl
+  :if (package-installed-p 'diff-hl)
   :init
   (progn
     (add-hook 'prog-mode-hook #'diff-hl-mode)))
@@ -1168,6 +1185,7 @@ Designed to be called before `message-send-and-exit'."
     (setq json-reformat:indent-width 2)))
 
 (use-package ws-butler
+  :if (package-installed-p 'ws-butler)
   :diminish ws-butler-mode
   :init
   (progn
@@ -1197,6 +1215,7 @@ Interactively, unmount when prefix argument."
     (add-hook 'workflow-goodbye-hook #'my/unmount-backup-disk)))
 
 (use-package editorconfig
+  :if (package-installed-p 'editorconfig)
   :init
   (add-hook 'prog-mode-hook #'editorconfig-mode)
   (add-hook 'text-mode-hook #'editorconfig-mode))
