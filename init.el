@@ -94,9 +94,6 @@
  '(org-time-stamp-rounding-minutes (quote (10 10)))
  '(org-use-speed-commands t)
  '(package-archive-priorities (quote (("melpa-stable" . 10))))
- '(package-selected-packages
-   (quote
-    (use-package diminish zerodark-theme)))
  '(powerline-display-buffer-size nil)
  '(proced-filter (quote all))
  '(projectile-cache-file "/home/cassou/.emacs.d/cache/projectile.cache")
@@ -156,6 +153,83 @@
  '(winner-mode t nil (winner) "Use C-c <left|right> to go back to previous windows configuration")
  '(zoom-frame/buffer (quote frame)))
 
+(setq package-selected-packages
+      '(
+        ace-link ; type o in help-mode to go to a link
+        ace-window ; manage windows with ace-like behavior
+        ag ; search using the 'ag' command (better grep)
+        aggressive-indent ; indent code automatically while typing
+        all-the-icons ; library with many icons (zerodark dependency)
+        anzu ; more interactive query-replace
+        assess ; library to facilitate test writing
+        avy ; move fast in buffer with <C-,>
+        bind-key ; to simplify definition of shortcuts
+        camcorder ; record emacs sessions M-x camcorder-record
+        company-tern ; tern backend for company mode
+        csharp-mode ; C# major mode
+        dash ; list library
+        diff-hl ; shows git status in buffer's fringe
+        diminish ; Shorter mode names in the modeline
+        dired-imenu ; integrates imenu in dired
+        dired-toggle-sudo ; <C-x s> to toggle sudo state of buffer
+        discover ; popus for some features
+        drag-stuff ; use <M-arrow> to move things around
+        editorconfig ; handle .editorconfig files automatically
+        expand-region ; <C-x => repeadly to mark regions
+        f ; file manipulation library
+        feature-mode ; major mode for editing feature files
+        flycheck ; flycheck to check files on the fly
+        flycheck-cask ; use Cask when present for dependencies
+        flycheck-package ; checks elisp package metadata
+        git-timemachine ; history of a file with M-x git-timemachine
+        grunt ; glue for grunt files (Javascript)
+        guide-key ; help you learn emacs
+        helm ; selection/completion interface for everything
+        helm-ag ; use ag from helm
+        helm-descbinds ; list available bindings through helm
+        helm-projectile ; integrate projectile and helm <C-. p h>
+        jabber ; instant messaging
+        jade ; JS development environment
+        js2-mode ; Improved Javascript editing mode
+        js2-refactor ; A Javascript refactoring library
+        json-mode ; Major mode to edit JSON files
+        less-css-mode ; Major mode to edit .less files
+        magit ; Integrate git <C-x g>
+        markdown-mode ; Major mode for markdown format
+        multiple-cursors ; Control multiple cursors with <C-S-c C-S-c>
+        org-vcard ; used by vdirel
+        orgtbl-show-header ; show header of column in minibuffer
+        ox-twbs ; use twitter bootstrap to export org files to HTML
+        paredit ; edit lisp AST instead of characters
+        paren-face ; hide parenthesis in elisp code
+        pass ; Nicolas' major mode for password-store
+        pos-tip ; make tool-tips appear nicely
+        powerline ; required by zerodark theme
+        prodigy ; manage external services from within Emacs
+        projectile ; add notion of projects
+        refine ; edit list interactively
+        runner ; Associate external applications to file extensions
+        s ; string library
+        skeletor ; facilitates the creation of new project
+        ;; slack  ; slack.com client for Emacs
+        smartscan ; <M-n> <M-p> to move between same symbol in buffer
+        tern ; Javascript code analyzer
+        undo-tree ; <C-x u> to show the undo tree
+        visible-mark ; show the current mark
+        ws-butler ; trim whitespace only in edited lines
+        xref-js2 ; Jump to references/definitions using ag &
+                                        ; js2-mode's AST (JavaScript)
+        yaml-mode ; to edit *.yml files (including .travis.yml)
+        yasnippet ; expand snippets of text
+        org-caldav ; sync between org and caldav
+        password-store ; get passwords from the 'pass' command
+        use-package ; to structure my init.el file
+        zoom-frm ; change font size for all buffers <C-x C-+>
+        beacon ; highlight my cursor when scrolling
+        debbugs ; SOAP library to access debbugs servers
+        nameless ; hide current package name everywhere in elisp code
+        ))
+
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
@@ -171,6 +245,7 @@
 ;;
 ;; (package-install-selected-packages)
 
+(require 'diminish)
 (require 'use-package)
 
 (defun set-selected-frame-dark ()
@@ -276,839 +351,785 @@ are visible."
 (unbind-key "M-<")
 (unbind-key "M->")
 
-;; (use-package ethan-wspace
-;;   :ensure t
-;;   :disabled t
-;;   :diminish ethan-wspace-mode
-;;   :demand t
-;;   :config
-;;   (progn
-;;     (setq mode-require-final-newline nil) ;; superseded
-;;     (global-ethan-wspace-mode)))
-
-;; (use-package undo-tree
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (global-undo-tree-mode))
-;;   :config
-;;   (progn
-;;     (define-key undo-tree-map (kbd "C-x r") nil)))
-
-;; (use-package dired
-;;   :defer t
-;;   :bind (("C-x C-j" . dired-jump))
-;;   :config
-;;   (progn
-;;     (use-package runner :ensure t)
-;;     (use-package dired-x)
-;;     (use-package dired-imenu :ensure t :demand t)
-
-;;     (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
-
-;;     (bind-key ")" 'dired-omit-mode dired-mode-map)
-
-;;     (add-hook 'dired-mode-hook
-;;               (lambda ()
-;;                 (dired-omit-mode)
-;;                 (dired-hide-details-mode 1)))
-
-;;     (defun dired-move-beginning-of-line ()
-;;       (interactive)
-;;       (let ((point (point)))
-;;         (dired-move-to-filename)
-;;         (when (= point (point))
-;;           (move-beginning-of-line nil))))
-
-;;     (define-key dired-mode-map
-;;       (vector 'remap 'move-beginning-of-line) 'dired-move-beginning-of-line)))
-
-;; (use-package recentf
-;;   :defer t
-;;   :config
-;;   (progn
-;;     (defun recentf-track-dired-buffers ()
-;;       "I want the dired buffers to be tracked by recentf"
-;;       (let ((cur-dir-no-slash (substring ; removes trailing slash
-;;                                (expand-file-name default-directory)
-;;                                0 -1)))
-;;         (when (and (file-directory-p cur-dir-no-slash)
-;;                    ;; because of recentf limitations,
-;;                    ;; - we can't store the filesystem root
-;;                    (not (zerop (length cur-dir-no-slash)))
-;;                    ;; - we can't store a TRAMP root
-;;                    (not (string-equal ":" (substring cur-dir-no-slash -1)))
-;;                    ;; And I prefer not storing TRAMP files
-;;                    (or (not (featurep 'tramp))
-;;                        (not (tramp-tramp-file-p cur-dir-no-slash))))
-;;           ;; recentf does not play well with file ending with a slash
-;;           (recentf-add-file cur-dir-no-slash))))
-;;     (add-hook 'dired-mode-hook 'recentf-track-dired-buffers t)))
-
-;; (use-package image-dired
-;;   :defer t
-;;   :config
-;;   (progn
-;;     (setq image-dired-cmd-create-thumbnail-options
-;;           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-thumbnail-options)
-;;           image-dired-cmd-create-temp-image-options
-;;           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-temp-image-options))))
-
-;; (use-package em-term
-;;   :defer t
-;;   :init
-;;   (progn
-;;     (eval-after-load "em-term"
-;;       '(progn
-;;          (add-to-list 'eshell-visual-commands "htop")
-;;          (add-to-list 'eshell-visual-commands "journalctl")
-;;          (add-to-list 'eshell-visual-commands "karma")
-;;          (add-to-list 'eshell-visual-commands "bower")))))
-
-;; (use-package esh-mode
-;;   :bind (:map eshell-mode-map
-;;               ("C-c C-l" . helm-eshell-history)))
-
-;; (use-package ediff
-;;   :defer t
-;;   :config
-;;   (progn
-;;     (setq-default ediff-auto-refine 'on)))
-
-;; (use-package magit
-;;   :ensure t
-;;   :diminish (magit-auto-revert-mode magit-wip-after-save-mode magit-wip-after-apply-mode magit-wip-affter-change)
-;;   :bind (("C-x g" . magit-status) ("C-x G" . magit-dispatch-popup))
-;;   :config
-;;   (progn
-;;     (when magit-wip-before-change-mode
-;;       (add-to-list 'magit-no-confirm #'safe-with-wip))
-
-;;     ;; prevents magit from showing ugly passphrase dialog
-;;     (setenv "SSH_ASKPASS" nil)))
-
-;; (use-package info
-;;   :bind ("C-h i" . my:info-other-window)
-;;   :config
-;;   (progn
-;;     ;; Redefines info-other-window to use features of `info'
-;;     (defun my:info-other-window (&optional file-or-node buffer)
-;;       "Like `info' but show the Info buffer in another window."
-;;       (interactive
-;;        (list
-;;         (if (and current-prefix-arg
-;;                  (not (numberp current-prefix-arg)))
-;;             (read-file-name "Info file name: " nil nil t))
-;;         (if (numberp current-prefix-arg)
-;;             (format "*info*<%s>" current-prefix-arg))))
-;;       (info-setup
-;;        file-or-node
-;;        (switch-to-buffer-other-window (or buffer "*info*"))))))
-
-;; (use-package ace-link
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (ace-link-setup-default)))
-
-;; (use-package ispell
-;;   :bind
-;;   (("C-. d b" . ispell-buffer)
-;;    ("C-. d f" . ispell-change-dictionary-to-french)
-;;    ("C-. d e" . ispell-change-dictionary-to-english)
-;;    ("C-. d ?" . ispell-change-dictionary))
-;;   :init
-;;   (progn
-;;     (defun ispell-set-dictionary (dict)
-;;       (save-excursion
-;;         (add-file-local-variable 'ispell-local-dictionary dict)))
-
-;;     (defun ispell-change-dictionary-to-french (arg)
-;;       (interactive "P")
-;;       (ispell-change-dictionary "francais")
-;;       (when arg
-;;         (ispell-set-dictionary "francais"))
-;;       (flyspell-buffer))
-
-;;     (defun ispell-change-dictionary-to-english (arg)
-;;       (interactive "P")
-;;       (ispell-change-dictionary "english")
-;;       (when arg
-;;         (ispell-set-dictionary "english"))
-;;       (flyspell-buffer))
-
-;;     (defun flyspell-toggle ()
-;;       (interactive)
-;;       (let ((mode-value (if flyspell-mode -1 1)))
-;;         (save-excursion
-;;           (add-file-local-variable 'eval `(flyspell-mode ,mode-value)))
-;;         (flyspell-mode mode-value)))))
-
-;; (use-package flyspell
-;;   :diminish flyspell-mode
-;;   :bind (("C-. f b" . flyspell-buffer)
-;;          ("C-. f m" . flyspell-toggle))
-;;   :init
-;;   (progn
-;;     (add-hook 'text-mode-hook 'flyspell-mode))
-;;   :config
-;;   (progn
-;;     (unbind-key "C-." flyspell-mode-map)))
-
-;; (use-package eldoc
-;;   :diminish eldoc-mode
-;;   :config
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-;;     (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)))
-
-;; (use-package checkdoc
-;;   :defer t
-;;   :diminish checkdoc-minor-mode)
-
-;; (use-package face-remap
-;;   :defer t
-;;   :diminish text-scale-mode)
-
-;; (use-package flycheck
-;;   :ensure t
-;;   :diminish flycheck-mode
-;;   :init
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-;;     (use-package flycheck-cask
-;;       :ensure t
-;;       :init
-;;       (progn
-;;         (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)))))
-
-;; (use-package org
-;;   :defer t
-;;   :bind
-;;   (("C-. o t"   . org-capture)
-;;    ("C-. o a"   . org-agenda)
-;;    ("C-. o l"   . org-store-link)
-;;    ("C-. o w"   . my:org-move-to-refile-target)
-;;    ("C-. o s"   . org-save-all-org-buffers))
-;;   :init
-;;   (progn
-;;     (setq org-modules '(org-protocol org-capture ox-beamer))
-
-;;     (defun my:org-move-to-refile-target (&optional last)
-;;       (interactive "p")
-;;       (require 'org)
-;;       (org-refile (if (= last 4) '(16) '(4)))))
-;;   :config
-;;   (progn
-;;     (bind-key "<S-left>" #'beginning-of-buffer org-mode-map)
-;;     (bind-key "<S-right>" #'end-of-buffer org-mode-map)
-
-;;     ;; Custom agenda command definitions
-;;     (setq org-agenda-custom-commands
-;;           (quote (("l" "Logbook" nico/org-agenda-log ""
-;;                    ((org-agenda-overriding-header "Logbook")))
-;;                   (" " "Agenda"
-;;                    ((agenda "" nil)
-;;                     (tags "REFILE"
-;;                           ((org-agenda-overriding-header "Tasks to Refile")
-;;                            (org-tags-match-list-sublevels nil))))
-;;                    nil))))
-
-;;     (defun nico/org-agenda-log (arg)
-;;       (let ((org-agenda-files org-agenda-files))
-;;         (add-to-list 'org-agenda-files "~/Documents/configuration/org/tasks.org_archive")
-;;         (add-to-list 'org-agenda-files "~/Documents/configuration/org/someday.org_archive")
-;;         (org-agenda-list arg)
-;;         (org-agenda-log-mode)
-;;         (org-agenda-earlier 1)))
-
-;;     (setq org-default-calendar-file
-;;           "~/Documents/configuration/org/schplaf.org")
-
-;;     (setq org-agenda-files
-;;           `("~/Documents/configuration/org/refile.org"
-;;             "~/Documents/configuration/org/tasks.org"
-;;             "~/Documents/configuration/org/someday.org"
-;;             "~/Documents/configuration/org/repeating.org"
-;;             ,org-default-calendar-file))
-
-;;     (setq org-refile-targets `(("~/Documents/configuration/org/tasks.org"      :maxlevel . 2)
-;;                                ("~/Documents/configuration/org/someday.org"    :maxlevel . 2)
-;;                                ("~/Documents/configuration/org/repeating.org"  :maxlevel . 2)))
-
-;;     (setq org-todo-keywords
-;;           '((sequence "TODO(t)"    "|" "DONE(d)" "CANCELLED(c)")))
-
-;;     (setq org-capture-templates
-;;           '(("t" "Todo" entry
-;;              (file org-default-notes-file)
-;;              "* TODO %?%i")
-;;             ("s" "Schedule" entry
-;;              (file org-default-calendar-file)
-;;              "* %?\n%^T")))
-
-;;     (unbind-key "C-'" org-mode-map)
-
-;;     (add-to-list 'org-file-apps '("\\.png\\'" . default))
-
-;;     (use-package ox-twbs :ensure t)))
-
-;; ;; TODO
-;; ;; (use-package org-caldav
-;; ;;   :ensure t
-;; ;;   :bind (("C-. o S"   . org-caldav-sync))
-;; ;;   :config
-;; ;;   (progn
-;; ;;     (setq org-caldav-url "https://cassou.me/baikal/cal.php/calendars/damien"
-;; ;;           org-caldav-calendar-id "default"
-;; ;;           org-caldav-inbox org-default-calendar-file
-;; ;;           org-caldav-files '()
-;; ;;           org-icalendar-timezone "Europe/Berlin"
-;; ;;           org-caldav-save-directory "~/.emacs.d/cache/org-caldav"
-;; ;;           org-caldav-sync-changes-to-org 'all)
-
-;; ;;     (defun my:import-ics-buffer-to-org ()
-;; ;;       "Add ics content in current buffer to `org-caldav-inbox'."
-;; ;;       (let ((event (org-caldav-convert-event))
-;; ;;             (file (org-caldav-inbox-file org-caldav-inbox)))
-;; ;;         (with-current-buffer (find-file-noselect file)
-;; ;;           (let* ((point-and-level (org-caldav-inbox-point-and-level org-caldav-inbox))
-;; ;;                  (point (car point-and-level))
-;; ;;                  (level (cdr point-and-level)))
-;; ;;             (goto-char point)
-;; ;;             (apply #'org-caldav-insert-org-entry
-;; ;;                    (append event (list nil level)))
-;; ;;             (message "%s: Added event: %s"
-;; ;;                      file
-;; ;;                      (buffer-substring
-;; ;;                       point
-;; ;;                       (save-excursion
-;; ;;                         (goto-char point)
-;; ;;                         (point-at-eol 2))))))))
-
-;; ;;     (defun my:import-ics-to-org (path)
-;; ;;       (with-current-buffer (get-buffer-create "*import-ics-to-org*")
-;; ;;         (delete-region (point-min) (point-max))
-;; ;;         (insert-file-contents path)
-;; ;;         (my:import-ics-buffer-to-org)))))
-
-;; (use-package calc
-;;   :defer t
-;;   :config
-;;   (progn
-;;     (defmath vwsum (vec1 vec2)
-;;       "Weighted sum: VEC1 are marks and VEC2 are coefficients."
-;;       (+ (* vec1 vec2)))
-
-;;     (defun my:round-to-half (num)
-;;       (let* ((decimal (- num (ftruncate num))))
-;;         (cond
-;;          ((or (zerop decimal) (= 0.5 decimal)) num)
-;;          ((< decimal 0.5) (+ 0.5 (ftruncate num)))
-;;          ((> decimal 0.5) (1+ (ftruncate num))))))))
-
-;; (use-package winner
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (progn
-;;     (defun winner:undo-again ()
-;;       (interactive)
-;;       (setq this-command 'winner-undo)
-;;       (winner-undo))
-
-;;     (defun winner:redo-again ()
-;;       (interactive)
-;;       (setq this-command 'winner-undo)
-;;       (winner-redo))
-
-;;     (defun winner:prepare-for-futher-undo ()
-;;       "Let one undo more by just pressing the last key.
-;; Using standard configuration and this function, the user will be
-;; able to type <C-c left left left> to undo 3 times whereas it was
-;; <C-c left C-c left C-c left> before."
-;;       (set-temporary-overlay-map
-;;        (let ((map (make-sparse-keymap)))
-;;          (define-key map (kbd "<left>") 'winner:undo-again)
-;;          (define-key map (kbd "<right>") 'winner:redo-again)
-;;          map) t)
-;;       (message "Type <left>/<right> to continue switching"))
-
-;;     (defun winner:initial-undo ()
-;;       (interactive)
-;;       (setq this-command 'winner-undo)
-;;       (winner-undo)
-;;       (winner:prepare-for-futher-undo))
-
-;;     (bind-key "C-c <left>" 'winner:initial-undo  winner-mode-map)))
-
-;; (use-package drag-stuff
-;;   :ensure t
-;;   :diminish drag-stuff-mode
-;;   :init
-;;   (progn
-;;     (drag-stuff-global-mode t)
-;;     (add-to-list 'drag-stuff-except-modes 'org-mode)
-;;     (add-to-list 'drag-stuff-except-modes 'js-mode)
-;;     (add-to-list 'drag-stuff-except-modes 'rebase-mode)))
-
-;; (use-package expand-region
-;;   :ensure t
-;;   :bind ("C-x =" . er/expand-region))
-
-;; (use-package multiple-cursors
-;;   :ensure t
-;;   :bind (("C-S-c C-S-c" . mc/edit-lines)
-;;          ("C->" . mc/mark-next-like-this)
-;;          ("C-<" . mc/mark-previous-like-this)
-;;          ("C-c C-<" . mc/mark-all-like-this)))
-
-;; (use-package shell-switcher
-;;   :load-path "packages/shell-switcher"
-;;   :bind (("C-M-'"   . shell-switcher-new-shell)
-;;          ("C-'"     . shell-switcher-switch-buffer)
-;;          ("C-x 4 '" . shell-switcher-switch-buffer-other-window)))
-
-;; (use-package guide-key
-;;   :ensure t
-;;   :diminish guide-key-mode
-;;   :config
-;;   (progn
-;;     (setq guide-key/guide-key-sequence '("C-x 4" "C-c @" "C-. p" "C-. t" "C-x RET"))
-;;     (add-to-list 'guide-key/guide-key-sequence endless/toggle-prefix)
-
-;;     (with-eval-after-load "helm-config"
-;;       (add-to-list 'guide-key/guide-key-sequence helm-command-prefix-key))
-
-;;     (guide-key-mode 1)))
-
-;; (use-package discover
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (global-discover-mode 1)))
-
-;; (use-package pillar
-;;   :ensure t
-;;   :mode ("\\.\\(pier\\|pillar\\)\\'" . pillar-mode))
-
-;; (use-package projectile
-;;   :ensure t
-;;   :diminish projectile-mode
-;;   :init
-;;   (progn
-;;     (projectile-global-mode)
-;;     (use-package helm-projectile
-;;       :ensure t
-;;       :init
-;;       (progn
-;;         (helm-projectile-on)))))
-
-;; (use-package unify-opening
-;;   :load-path "packages/unify-opening"
-;;   :demand t)
-
-;; (eval-and-compile
-;;   (setq-default notmuch-command (executable-find "notmuch")))
-
-;; (use-package notmuch
-;;   :if notmuch-command
-;;   :load-path (lambda ()
-;;                (and notmuch-command
-;;                     (list (expand-file-name
-;;                            "../../share/emacs/site-lisp"
-;;                            (file-symlink-p notmuch-command)))))
-;;   :bind (("C-. m" . notmuch))
-;;   :config
-;;   (progn
-;;     (setq notmuch-message-headers '("To" "Cc" "Subject" "Date"))
-
-;;     (defun my:mm-ics-to-org-part (handle &optional prompt)
-;;       "Add message part HANDLE to org."
-;;       (mm-with-unibyte-buffer
-;;         (mm-insert-part handle)
-;;         (mm-add-meta-html-tag handle)
-;;         (require 'org-caldav)
-;;         (my:import-ics-buffer-to-org)))
-
-;;     (defun my:notmuch-show-ics-to-org-part ()
-;;       "Save the .ics MIME part containing point to an org file."
-;;       (interactive)
-;;       (notmuch-show-apply-to-current-part-handle #'my:mm-ics-to-org-part))
-
-;;     (with-eval-after-load "notmuch-show"
-;;       (bind-key "d" #'my:notmuch-show-ics-to-org-part notmuch-show-part-map)
-;;       ;; bind 'r' to reply-all, and 'R' to reply
-;;       (bind-key "r" #'notmuch-search-reply-to-thread notmuch-search-mode-map)
-;;       (bind-key "R" #'notmuch-search-reply-to-thread-sender notmuch-search-mode-map)
-;;       (bind-key "r" #'notmuch-show-reply notmuch-show-mode-map)
-;;       (bind-key "R" #'notmuch-show-reply-sender notmuch-show-mode-map))
-
-;;     (use-package profile
-;;       :demand t
-;;       :init
-;;       (progn
-;;         (defun my:notmuch-build-identity (&optional email)
-;;           "Return a string of the form \"name <EMAIL>\"."
-;;           (let ((email (or email user-mail-address)))
-;;             (format "%s <%s>" (notmuch-user-name) email)))
-
-;;         (setq notmuch-identities
-;;               (mapcar #'my:notmuch-build-identity
-;;                       (profile-email-addresses)))
-
-;;         (defun my:notmuch-prompt-for-sender ()
-;;           "Prompt for a sender using `profile-binding-alist'."
-;;           (profile-set-profile)
-;;           (my:notmuch-build-identity))
-
-;;         (advice-add #'notmuch-mua-prompt-for-sender
-;;                     :override
-;;                     #'my:notmuch-prompt-for-sender)
-
-;;         (setq notmuch-archive-tags '("-inbox" "-unread"))
-
-;;         (setq notmuch-saved-searches
-;;               `((:name "inbox" :query ,(profile-inbox-query) :key "i")
-;;                 (:name "noisy" :query ,(profile-noisy-unarchived-list-query) :key "n")
-;;                 (:name "ftgp" :query "(foretagsplatsen OR ftgp) AND tag:inbox" :key "f")
-;;                 (:name "ignored" :query "tag:inbox AND (no-reply@slack.com OR to:support@foretagsplatsen.se OR (to:current@foretagsplatsen.se AND subject:FATAL) OR subject:production-ftgp OR subject:\"master Error\" OR subject:\"ben Error\" OR to:info@foretagsplatsen.se)" :key "g")
-;;                 (:name "unread" :query "tag:unread" :key "u")
-;;                 (:name "sent" :query ,(profile-sent-query) :key "s"))))
-;;       :config
-;;       (progn
-;;         (with-eval-after-load "notmuch-hello"
-;;           (add-to-list 'notmuch-hello-sections
-;;                        #'profile-queue-insert-section
-;;                        t))))))
-
-;; (use-package profile
-;;   :demand t
-;;   :load-path "packages/profile"
-;;   :init
-;;   (progn
-;;     (with-eval-after-load "message"
-;;       (bind-key "C-c F" #'profile-force-profile-in-compose message-mode-map)))
-;;   :config
-;;   (progn
-;;     (setq profile-binding-alist
-;;           '(("Perso"
-;;              (profile-maildir . "/Perso")
-;;              (notmuch-fcc-dirs . "Perso/Sent")
-;;              (user-mail-address . "damien@cassou.me")
-;;              (smtpmail-queue-dir . "~/Mail/Perso/queued-mail/")
-;;              (smtpmail-local-domain . nil)
-;;              (smtpmail-smtp-user . "damien@cassou.me")
-;;              (smtpmail-smtp-server . "choca.pics")
-;;              (smtpmail-stream-type . ssl)
-;;              (smtpmail-smtp-service . 465))
-;;             ("Ftgp"
-;;              (profile-maildir . "/Ftgp")
-;;              (user-mail-address . "damien.cassou@foretagsplatsen.se")
-;;              (smtpmail-queue-dir . "~/Mail/Ftgp/queued-mail/")
-;;              (smtpmail-local-domain . nil)
-;;              (smtpmail-smtp-user . "damien.cassou@foretagsplatsen.se")
-;;              (smtpmail-smtp-server . "smtp.gmail.com")
-;;              (smtpmail-stream-type . starttls)
-;;              (smtpmail-smtp-service . 587))))
-;;     (profile-set-profile-from-name "Perso")
-;;     (setq profile-extra-email-addresses
-;;           (quote
-;;            ("damien.cassou@lifl.fr" "cassou@inria.fr"
-;;             "damien.cassou@laposte.net" "damien@foretagsplatsen.se")))
-;;     (setq profile-noisy-query
-;;           "to:\"notmuch@notmuchmail.org\" OR to:\"offlineimap-project@lists.alioth.debian.org\" OR list:\"nix-dev\" OR to:\"emacs-devel\"")))
-
-;; (use-package mml
-;;   :defer t
-;;   :init
-;;   (progn
-;;     ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
-;;     (defun my:mml-attach-file--go-to-eob (orig-fun &rest args)
-;;       "Go to the end of buffer before attaching files."
-;;       (save-excursion
-;;         (save-restriction
-;;           (widen)
-;;           (goto-char (point-max))
-;;           (apply orig-fun args))))
-
-;;     (advice-add 'mml-attach-file :around #'my:mml-attach-file--go-to-eob)))
-
-;; (use-package message
-;;   :defer t
-;;   :config
-;;   (progn
-;;     ;;; The following make sure to use the right profile when sending
-;;     ;;; the message (i.e., when pressing C-c C-c in message-mode).
-;;     ;;; It's better to set the profile just before sending to be sure
-;;     ;;; to use the profile related to the From: message field).
-;;     (defun my:message-send-and-exit (&optional arg)
-;;       "Set profile according to From field.
-;; Designed to be called before `message-send-and-exit'."
-;;       (profile-set-profile-from-message-from-field))
-;;     (advice-add #'message-send-and-exit
-;;                 :before
-;;                 #'my:message-send-and-exit)))
-
-;; (use-package image
-;;   :config
-;;   (imagemagick-register-types))
-
-;; (use-package paredit
-;;   :ensure t
-;;   :diminish paredit-mode
-;;   :bind (:map paredit-mode-map
-;;               ("M-s" . nil))
-;;   :init
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
-;;     (add-hook 'lisp-mode-hook #'enable-paredit-mode))
-;;   :config
-;;   (progn
-;;     (with-eval-after-load "eldoc"
-;;       (eldoc-add-command 'paredit-backward-delete 'paredit-close-round))))
-
-;; (use-package autorevert
-;;   :defer t
-;;   :diminish auto-revert-mode)
-
-;; (use-package smartscan
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (progn
-;;     (add-hook 'prog-mode-hook 'smartscan-mode)
-;;     (add-hook 'pillar-mode-hook 'smartscan-mode)))
-
-;; (use-package zoom-frm
-;;   :ensure t
-;;   :bind (("C-x C-+" . zoom-in/out)
-;;          ("C-x C--" . zoom-in/out)
-;;          ("C-x C-=" . zoom-in/out)
-;;          ("C-x C-0" . zoom-in/out)
-;;          ("<C-mouse-4>" . zoom-in)
-;;          ("<C-mouse-5>" . zoom-out)))
-
-;; (use-package visible-mark
-;;   :ensure t
-;;   :config
-;;   (progn
-;;     (global-visible-mark-mode 1)))
-
-;; (use-package paren-face
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (global-paren-face-mode)))
-
-;; (use-package help
-;;   :bind (:map help-map
-;;               ("C-v" . find-variable)
-;;               ("C-k" . find-function-on-key)
-;;               ("C-f" . find-function)
-;;               ("C-l" . find-library)))
-
-;; (use-package anzu
-;;   :ensure t
-;;   :diminish anzu-mode
-;;   :init
-;;   (progn
-;;     (global-anzu-mode +1)
-;;     (global-set-key [remap query-replace] 'anzu-query-replace)
-;;     (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-;;     (define-key isearch-mode-map [remap isearch-query-replace] #'anzu-isearch-query-replace)
-;;     (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)))
-
-;; (use-package aggressive-indent
-;;   :ensure t
-;;   :diminish aggressive-indent-mode
-;;   :config
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-;;     (add-hook 'lisp-mode-hook #'aggressive-indent-mode)))
-
-;; (use-package helm
-;;   :ensure t
-;;   :diminish helm-mode
-;;   :bind (("M-x"     . helm-M-x)
-;;          ("M-y"     . helm-show-kill-ring)
-;;          ("C-x b"   . helm-mini)
-;;          ("C-x C-f" . helm-find-files)
-;;          ("C-x d"   . helm-find-files)
-;;          ("M-i"     . helm-imenu)
-;;          ("C-h SPC" . helm-all-mark-rings)
-;;          ("C-:"     . helm-eval-expression-with-eldoc)
-;;          :map helm-map
-;;          ("<tab>"   . helm-execute-persistent-action)
-;;          ("C-i"     . helm-execute-persistent-action)
-;;          ("C-z"     . helm-select-action)
-;;          ("<S-left>"  . helm-beginning-of-buffer)
-;;          ("<S-right>" . helm-end-of-buffer)
-;;          :map dired-mode-map ;; helm-imenu doesn't work with dired
-;;          ("M-i"     . imenu))
-;;   :init
-;;   (progn
-;;     (require 'helm-config))
-;;   :config
-;;   (progn
-;;     (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-;;           helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
-;;           helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-;;           helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-;;           helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-;;           helm-ff-file-name-history-use-recentf t)
-
-;;     (with-eval-after-load "eshell"
-;;       (require 'helm-eshell))
-
-;;     (with-eval-after-load "projectile"
-;;       (require 'helm-projectile))
-
-;;     (use-package helm-descbinds
-;;       :ensure t)
-
-;;     (helm-descbinds-mode)
-;;     (helm-mode 1)))
-
-;; (use-package password-store
-;;   :ensure t
-;;   :config
-;;   (progn
-;;     (setq password-store-password-length 16)))
-
-;; (use-package auth-password-store
-;;   :demand t
-;;   :load-path "packages/auth-password-store"
-;;   :init
-;;   (progn
-;;     (setq auth-sources '(password-store))))
-
-;; (use-package ace-window
-;;   :ensure t
-;;   :bind* (("M-o" . ace-window))
-;;   :config
-;;   (progn
-;;     ;; Use same keys for both ace-window and avy
-;;     (setq aw-keys avy-keys)))
-
-;; (use-package avy
-;;   :ensure t
-;;   :bind* (("C-," . avy-goto-char-2))
-;;   ;; dont :bind* this as this would override `M-g` in Projectile
-;;   ;; (helm-projectile-vc):
-;;   :bind (("M-g g" . avy-goto-line))
-;;   :init
-;;   (progn
-;;     ;; keys under my fingers (blue keys on my Kinesis Advantage)
-;;     (setq avy-keys '(?a ?s  ?d  ?f  ?j  ?k  ?l  59 32))))
-
-;; (use-package outline
-;;   :diminish outline-minor-mode)
-
-;; (use-package beginend
-;;   :diminish (beginend-dired-mode beginend-message-mode)
-;;   :load-path "packages/beginend"
-;;   :config
-;;   (progn
-;;     (beginend-setup-all)))
-
-;; ;; (use-package vdirel
-;; ;;   :load-path "packages/vdirel"
-;; ;;   :bind (("C-. c" . vdirel-helm-select-email)))
-
-;; (use-package help
-;;   :defer t
-;;   :config
-;;   (progn
-;;     (defun my:revert-buffer-no-confirm (&optional ignore-auto)
-;;       "Revert current buffer without asking."
-;;       (interactive (list (not current-prefix-arg)))
-;;       (revert-buffer ignore-auto t nil))
-;;     ;; Make sure `g' reverts buffer without confirmation
-;;     (bind-key (vector 'remap 'revert-buffer)
-;;               #'my:revert-buffer-no-confirm
-;;               help-mode-map)))
-
-;; (use-package nameless
-;;   :ensure t
-;;   :diminish nameless-mode
-;;   :config
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook #'nameless-mode)))
-
-;; (defun occur-non-ascii ()
-;;   "Find any non-ascii characters in the current buffer."
-;;   (interactive)
-;;   (occur "[^[:ascii:]]"))
-
-;; (use-package beacon
-;;   :ensure t
-;;   :diminish beacon-mode
-;;   :init
-;;   (progn
-;;     (beacon-mode))
-;;   :config
-;;   (progn
-;;     ;; don't blink in notmuch-search, it's both slow and ugly
-;;     (add-to-list 'beacon-dont-blink-commands #'notmuch-search)))
-
-;; (use-package subword
-;;   :diminish subword-mode)
-
-;; (use-package company
-;;   :ensure t
-;;   :diminish company-mode
-;;   :init
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook #'company-mode)))
-
-;; (use-package widgetjs
-;;   :diminish widgetjs-mode
-;;   :load-path "packages/emacs-js/widgetjs")
-
-;; (add-to-list 'load-path "~/.emacs.d/packages/amd-mode")
-;; (add-to-list 'load-path "~/.emacs.d/packages/gulp-task-runner")
-
-;; (use-package emacs-js
-;;   :diminish (js2-refactor-mode js2-minor-mode amd-mode js-lint-mode tern-mode)
-;;   :load-path "packages/emacs-js"
-;;   :config
-;;   (progn
-;;     (use-package monitor-setup)
-;;     (setenv "PATH" (concat (getenv "PATH") ":/home/cassou/node_modules/.bin"))
-;;     (add-to-list 'exec-path "/home/cassou/node_modules/.bin")))
-
-;; (use-package ftgp
-;;   :load-path "packages/ftgp")
-
-;; (use-package jabber
-;;   :disabled t
-;;   :ensure t
-;;   :bind
-;;   (("C-. j c" . jabber-connect-all)
-;;    ("C-. j d" . jabber-disconnect)
-;;    ("C-. j r" . jabber-switch-to-roster-buffer)
-;;    ("C-. j j" . jabber-chat-with)
-;;    ("C-. j l" . jabber-activity-switch-to)
-;;    ("C-. j a" . jabber-send-away-presence)
-;;    ("C-. j o" . jabber-send-default-presence)
-;;    ("C-. j x" . jabber-send-xa-presence)
-;;    ("C-. j p" . jabber-send-presence))
-;;   :init
-;;   (progn
-;;     (defun my/jabber-start ()
-;;       (interactive)
-;;       (require 'jabber)
-;;       (setq jabber-account-list
-;;             `(("damien@cassou.me"
-;;                (:password . ,(password-store-get "ldn-fai.net")))))
-;;       (add-hook 'jabber-post-connect-hooks #'jabber-autoaway-start)
-;;       (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
-
-;;       ;; Override jabber.el global key
-;;       (bind-key "C-x C-j" #'dired-jump)
-
-;;       (jabber-connect-all))))
+(use-package undo-tree
+  :init
+  (progn
+    (global-undo-tree-mode))
+  :config
+  (progn
+    (define-key undo-tree-map (kbd "C-x r") nil)))
+
+(use-package dired
+  :defer t
+  :bind (("C-x C-j" . dired-jump))
+  :config
+  (progn
+    (use-package runner)
+    (use-package dired-x)
+    (use-package dired-imenu :demand t)
+
+    (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
+
+    (bind-key ")" 'dired-omit-mode dired-mode-map)
+
+    (add-hook 'dired-mode-hook
+              (lambda ()
+                (dired-omit-mode)
+                (dired-hide-details-mode 1)))
+
+    (defun dired-move-beginning-of-line ()
+      (interactive)
+      (let ((point (point)))
+        (dired-move-to-filename)
+        (when (= point (point))
+          (move-beginning-of-line nil))))
+
+    (define-key dired-mode-map
+      (vector 'remap 'move-beginning-of-line) 'dired-move-beginning-of-line)))
+
+(use-package recentf
+  :defer t
+  :config
+  (progn
+    (defun recentf-track-dired-buffers ()
+      "I want the dired buffers to be tracked by recentf"
+      (let ((cur-dir-no-slash (substring ; removes trailing slash
+                               (expand-file-name default-directory)
+                               0 -1)))
+        (when (and (file-directory-p cur-dir-no-slash)
+                   ;; because of recentf limitations,
+                   ;; - we can't store the filesystem root
+                   (not (zerop (length cur-dir-no-slash)))
+                   ;; - we can't store a TRAMP root
+                   (not (string-equal ":" (substring cur-dir-no-slash -1)))
+                   ;; And I prefer not storing TRAMP files
+                   (or (not (featurep 'tramp))
+                       (not (tramp-tramp-file-p cur-dir-no-slash))))
+          ;; recentf does not play well with file ending with a slash
+          (recentf-add-file cur-dir-no-slash))))
+    (add-hook 'dired-mode-hook 'recentf-track-dired-buffers t)))
+
+(use-package em-term
+  :defer t
+  :init
+  (progn
+    (eval-after-load "em-term"
+      '(progn
+         (add-to-list 'eshell-visual-commands "htop")
+         (add-to-list 'eshell-visual-commands "journalctl")
+         (add-to-list 'eshell-visual-commands "karma")
+         (add-to-list 'eshell-visual-commands "bower")))))
+
+(use-package esh-mode
+  :bind (:map eshell-mode-map
+              ("C-c C-l" . helm-eshell-history)))
+
+(use-package ediff
+  :defer t
+  :config
+  (progn
+    (setq-default ediff-auto-refine 'on)))
+
+(use-package magit
+  :diminish (magit-auto-revert-mode magit-wip-after-save-mode magit-wip-after-apply-mode magit-wip-affter-change)
+  :bind (("C-x g" . magit-status) ("C-x G" . magit-dispatch-popup))
+  :config
+  (progn
+    (when magit-wip-before-change-mode
+      (add-to-list 'magit-no-confirm #'safe-with-wip))
+
+    ;; prevents magit from showing ugly passphrase dialog
+    (setenv "SSH_ASKPASS" nil)))
+
+(use-package info
+  :bind ("C-h i" . my:info-other-window)
+  :config
+  (progn
+    ;; Redefines info-other-window to use features of `info'
+    (defun my:info-other-window (&optional file-or-node buffer)
+      "Like `info' but show the Info buffer in another window."
+      (interactive
+       (list
+        (if (and current-prefix-arg
+                 (not (numberp current-prefix-arg)))
+            (read-file-name "Info file name: " nil nil t))
+        (if (numberp current-prefix-arg)
+            (format "*info*<%s>" current-prefix-arg))))
+      (info-setup
+       file-or-node
+       (switch-to-buffer-other-window (or buffer "*info*"))))))
+
+(use-package ace-link
+  :init
+  (progn
+    (ace-link-setup-default)))
+
+(use-package ispell
+  :bind
+  (("C-. d b" . ispell-buffer)
+   ("C-. d f" . ispell-change-dictionary-to-french)
+   ("C-. d e" . ispell-change-dictionary-to-english)
+   ("C-. d ?" . ispell-change-dictionary))
+  :init
+  (progn
+    (defun ispell-set-dictionary (dict)
+      (save-excursion
+        (add-file-local-variable 'ispell-local-dictionary dict)))
+
+    (defun ispell-change-dictionary-to-french (arg)
+      (interactive "P")
+      (ispell-change-dictionary "francais")
+      (when arg
+        (ispell-set-dictionary "francais"))
+      (flyspell-buffer))
+
+    (defun ispell-change-dictionary-to-english (arg)
+      (interactive "P")
+      (ispell-change-dictionary "english")
+      (when arg
+        (ispell-set-dictionary "english"))
+      (flyspell-buffer))
+
+    (defun flyspell-toggle ()
+      (interactive)
+      (let ((mode-value (if flyspell-mode -1 1)))
+        (save-excursion
+          (add-file-local-variable 'eval `(flyspell-mode ,mode-value)))
+        (flyspell-mode mode-value)))))
+
+(use-package flyspell
+  :diminish flyspell-mode
+  :bind (("C-. f b" . flyspell-buffer)
+         ("C-. f m" . flyspell-toggle))
+  :init
+  (progn
+    (add-hook 'text-mode-hook 'flyspell-mode))
+  :config
+  (progn
+    (unbind-key "C-." flyspell-mode-map)))
+
+(use-package eldoc
+  :diminish eldoc-mode
+  :config
+  (progn
+    (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)))
+
+(use-package checkdoc
+  :defer t
+  :diminish checkdoc-minor-mode)
+
+(use-package face-remap
+  :defer t
+  :diminish text-scale-mode)
+
+(use-package flycheck
+  :diminish flycheck-mode
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+    (use-package flycheck-cask
+      :init
+      (progn
+        (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)))))
+
+(use-package org
+  :defer t
+  :bind
+  (("C-. o t"   . org-capture)
+   ("C-. o a"   . org-agenda)
+   ("C-. o l"   . org-store-link)
+   ("C-. o w"   . my:org-move-to-refile-target)
+   ("C-. o s"   . org-save-all-org-buffers))
+  :init
+  (progn
+    (setq org-modules '(org-protocol org-capture ox-beamer))
+
+    (defun my:org-move-to-refile-target (&optional last)
+      (interactive "p")
+      (require 'org)
+      (org-refile (if (= last 4) '(16) '(4)))))
+  :config
+  (progn
+    (bind-key "<S-left>" #'beginning-of-buffer org-mode-map)
+    (bind-key "<S-right>" #'end-of-buffer org-mode-map)
+
+    ;; Custom agenda command definitions
+    (setq org-agenda-custom-commands
+          (quote (("l" "Logbook" nico/org-agenda-log ""
+                   ((org-agenda-overriding-header "Logbook")))
+                  (" " "Agenda"
+                   ((agenda "" nil)
+                    (tags "REFILE"
+                          ((org-agenda-overriding-header "Tasks to Refile")
+                           (org-tags-match-list-sublevels nil))))
+                   nil))))
+
+    (defun nico/org-agenda-log (arg)
+      (let ((org-agenda-files org-agenda-files))
+        (add-to-list 'org-agenda-files "~/Documents/configuration/org/tasks.org_archive")
+        (add-to-list 'org-agenda-files "~/Documents/configuration/org/someday.org_archive")
+        (org-agenda-list arg)
+        (org-agenda-log-mode)
+        (org-agenda-earlier 1)))
+
+    (setq org-default-calendar-file
+          "~/Documents/configuration/org/schplaf.org")
+
+    (setq org-agenda-files
+          `("~/Documents/configuration/org/refile.org"
+            "~/Documents/configuration/org/tasks.org"
+            "~/Documents/configuration/org/someday.org"
+            "~/Documents/configuration/org/repeating.org"
+            ,org-default-calendar-file))
+
+    (setq org-refile-targets `(("~/Documents/configuration/org/tasks.org"      :maxlevel . 2)
+                               ("~/Documents/configuration/org/someday.org"    :maxlevel . 2)
+                               ("~/Documents/configuration/org/repeating.org"  :maxlevel . 2)))
+
+    (setq org-todo-keywords
+          '((sequence "TODO(t)"    "|" "DONE(d)" "CANCELLED(c)")))
+
+    (setq org-capture-templates
+          '(("t" "Todo" entry
+             (file org-default-notes-file)
+             "* TODO %?%i")
+            ("s" "Schedule" entry
+             (file org-default-calendar-file)
+             "* %?\n%^T")))
+
+    (unbind-key "C-'" org-mode-map)
+
+    (add-to-list 'org-file-apps '("\\.png\\'" . default))
+
+    (use-package ox-twbs)))
+
+(use-package org-caldav
+  :bind (("C-. o S"   . org-caldav-sync))
+  :config
+  (progn
+    (setq org-caldav-url "https://cassou.me/baikal/cal.php/calendars/damien"
+          org-caldav-calendar-id "default"
+          org-caldav-inbox org-default-calendar-file
+          org-caldav-files '()
+          org-icalendar-timezone "Europe/Berlin"
+          org-caldav-save-directory "~/.emacs.d/cache/org-caldav"
+          org-caldav-sync-changes-to-org 'all)
+
+    (defun my:import-ics-buffer-to-org ()
+      "Add ics content in current buffer to `org-caldav-inbox'."
+      (let ((event (org-caldav-convert-event))
+            (file (org-caldav-inbox-file org-caldav-inbox)))
+        (with-current-buffer (find-file-noselect file)
+          (let* ((point-and-level (org-caldav-inbox-point-and-level org-caldav-inbox))
+                 (point (car point-and-level))
+                 (level (cdr point-and-level)))
+            (goto-char point)
+            (apply #'org-caldav-insert-org-entry
+                   (append event (list nil level)))
+            (message "%s: Added event: %s"
+                     file
+                     (buffer-substring
+                      point
+                      (save-excursion
+                        (goto-char point)
+                        (point-at-eol 2))))))))
+
+    (defun my:import-ics-to-org (path)
+      (with-current-buffer (get-buffer-create "*import-ics-to-org*")
+        (delete-region (point-min) (point-max))
+        (insert-file-contents path)
+        (my:import-ics-buffer-to-org)))))
+
+(use-package calc
+  :defer t
+  :config
+  (progn
+    (defmath vwsum (vec1 vec2)
+      "Weighted sum: VEC1 are marks and VEC2 are coefficients."
+      (+ (* vec1 vec2)))
+
+    (defun my:round-to-half (num)
+      (let* ((decimal (- num (ftruncate num))))
+        (cond
+         ((or (zerop decimal) (= 0.5 decimal)) num)
+         ((< decimal 0.5) (+ 0.5 (ftruncate num)))
+         ((> decimal 0.5) (1+ (ftruncate num))))))))
+
+(use-package winner
+  :defer t
+  :init
+  (progn
+    (defun winner:undo-again ()
+      (interactive)
+      (setq this-command 'winner-undo)
+      (winner-undo))
+
+    (defun winner:redo-again ()
+      (interactive)
+      (setq this-command 'winner-undo)
+      (winner-redo))
+
+    (defun winner:prepare-for-futher-undo ()
+      "Let one undo more by just pressing the last key.
+Using standard configuration and this function, the user will be
+able to type <C-c left left left> to undo 3 times whereas it was
+<C-c left C-c left C-c left> before."
+      (set-temporary-overlay-map
+       (let ((map (make-sparse-keymap)))
+         (define-key map (kbd "<left>") 'winner:undo-again)
+         (define-key map (kbd "<right>") 'winner:redo-again)
+         map) t)
+      (message "Type <left>/<right> to continue switching"))
+
+    (defun winner:initial-undo ()
+      (interactive)
+      (setq this-command 'winner-undo)
+      (winner-undo)
+      (winner:prepare-for-futher-undo))
+
+    (bind-key "C-c <left>" 'winner:initial-undo  winner-mode-map)))
+
+(use-package drag-stuff
+  :diminish drag-stuff-mode
+  :init
+  (progn
+    (drag-stuff-global-mode t)
+    (add-to-list 'drag-stuff-except-modes 'org-mode)
+    (add-to-list 'drag-stuff-except-modes 'js-mode)
+    (add-to-list 'drag-stuff-except-modes 'rebase-mode)))
+
+(use-package expand-region
+  :bind ("C-x =" . er/expand-region))
+
+(use-package multiple-cursors
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)))
+
+(use-package shell-switcher
+  :load-path "packages/shell-switcher"
+  :bind (("C-M-'"   . shell-switcher-new-shell)
+         ("C-'"     . shell-switcher-switch-buffer)
+         ("C-x 4 '" . shell-switcher-switch-buffer-other-window)))
+
+(use-package guide-key
+  :diminish guide-key-mode
+  :config
+  (progn
+    (setq guide-key/guide-key-sequence '("C-x 4" "C-c @" "C-. p" "C-. t" "C-x RET" "C-c ^"))
+    (add-to-list 'guide-key/guide-key-sequence endless/toggle-prefix)
+
+    (with-eval-after-load "helm-config"
+      (add-to-list 'guide-key/guide-key-sequence helm-command-prefix-key))
+
+    (guide-key-mode 1)))
+
+(use-package discover
+  :init
+  (progn
+    (global-discover-mode 1)))
+
+(use-package projectile
+  :diminish projectile-mode
+  :init
+  (progn
+    (projectile-global-mode)
+    (use-package helm-projectile
+      :init
+      (progn
+        (helm-projectile-on)))))
+
+(use-package unify-opening
+  :load-path "packages/unify-opening"
+  :demand t)
+
+(eval-and-compile
+  (setq-default notmuch-command (executable-find "notmuch")))
+
+(use-package notmuch
+  :if notmuch-command
+  :load-path (lambda ()
+               (and notmuch-command
+                    (list (expand-file-name
+                           "../../share/emacs/site-lisp"
+                           (file-symlink-p notmuch-command)))))
+  :bind (("C-. m" . notmuch))
+  :config
+  (progn
+    (setq notmuch-message-headers '("To" "Cc" "Subject" "Date"))
+
+    (defun my:mm-ics-to-org-part (handle &optional prompt)
+      "Add message part HANDLE to org."
+      (mm-with-unibyte-buffer
+        (mm-insert-part handle)
+        (mm-add-meta-html-tag handle)
+        (require 'org-caldav)
+        (my:import-ics-buffer-to-org)))
+
+    (defun my:notmuch-show-ics-to-org-part ()
+      "Save the .ics MIME part containing point to an org file."
+      (interactive)
+      (notmuch-show-apply-to-current-part-handle #'my:mm-ics-to-org-part))
+
+    (with-eval-after-load "notmuch-show"
+      (bind-key "d" #'my:notmuch-show-ics-to-org-part notmuch-show-part-map)
+      ;; bind 'r' to reply-all, and 'R' to reply
+      (bind-key "r" #'notmuch-search-reply-to-thread notmuch-search-mode-map)
+      (bind-key "R" #'notmuch-search-reply-to-thread-sender notmuch-search-mode-map)
+      (bind-key "r" #'notmuch-show-reply notmuch-show-mode-map)
+      (bind-key "R" #'notmuch-show-reply-sender notmuch-show-mode-map))
+
+    (use-package profile
+      :demand t
+      :init
+      (progn
+        (defun my:notmuch-build-identity (&optional email)
+          "Return a string of the form \"name <EMAIL>\"."
+          (let ((email (or email user-mail-address)))
+            (format "%s <%s>" (notmuch-user-name) email)))
+
+        (setq notmuch-identities
+              (mapcar #'my:notmuch-build-identity
+                      (profile-email-addresses)))
+
+        (defun my:notmuch-prompt-for-sender ()
+          "Prompt for a sender using `profile-binding-alist'."
+          (profile-set-profile)
+          (my:notmuch-build-identity))
+
+        (advice-add #'notmuch-mua-prompt-for-sender
+                    :override
+                    #'my:notmuch-prompt-for-sender)
+
+        (setq notmuch-archive-tags '("-inbox" "-unread"))
+
+        (setq notmuch-saved-searches
+              `((:name "inbox" :query ,(profile-inbox-query) :key "i")
+                (:name "noisy" :query ,(profile-noisy-unarchived-list-query) :key "n")
+                (:name "ftgp" :query "(foretagsplatsen OR ftgp) AND tag:inbox" :key "f")
+                (:name "ignored" :query "tag:inbox AND (no-reply@slack.com OR to:support@foretagsplatsen.se OR (to:current@foretagsplatsen.se AND subject:FATAL) OR subject:production-ftgp OR subject:\"master Error\" OR subject:\"ben Error\" OR to:info@foretagsplatsen.se)" :key "g")
+                (:name "unread" :query "tag:unread" :key "u")
+                (:name "sent" :query ,(profile-sent-query) :key "s"))))
+      :config
+      (progn
+        (with-eval-after-load "notmuch-hello"
+          (add-to-list 'notmuch-hello-sections
+                       #'profile-queue-insert-section
+                       t))))))
+
+(use-package profile
+  :demand t
+  :load-path "packages/profile"
+  :init
+  (progn
+    (with-eval-after-load "message"
+      (bind-key "C-c F" #'profile-force-profile-in-compose message-mode-map)))
+  :config
+  (progn
+    (setq profile-binding-alist
+          '(("Perso"
+             (profile-maildir . "/Perso")
+             (notmuch-fcc-dirs . "Perso/Sent")
+             (user-mail-address . "damien@cassou.me")
+             (smtpmail-queue-dir . "~/Mail/Perso/queued-mail/")
+             (smtpmail-local-domain . nil)
+             (smtpmail-smtp-user . "damien@cassou.me")
+             (smtpmail-smtp-server . "choca.pics")
+             (smtpmail-stream-type . ssl)
+             (smtpmail-smtp-service . 465))
+            ("Ftgp"
+             (profile-maildir . "/Ftgp")
+             (user-mail-address . "damien.cassou@foretagsplatsen.se")
+             (smtpmail-queue-dir . "~/Mail/Ftgp/queued-mail/")
+             (smtpmail-local-domain . nil)
+             (smtpmail-smtp-user . "damien.cassou@foretagsplatsen.se")
+             (smtpmail-smtp-server . "smtp.gmail.com")
+             (smtpmail-stream-type . starttls)
+             (smtpmail-smtp-service . 587))))
+    (profile-set-profile-from-name "Perso")
+    (setq profile-extra-email-addresses
+          (quote
+           ("damien.cassou@lifl.fr" "cassou@inria.fr"
+            "damien.cassou@laposte.net" "damien@foretagsplatsen.se")))
+    (setq profile-noisy-query
+          "to:\"notmuch@notmuchmail.org\" OR to:\"offlineimap-project@lists.alioth.debian.org\" OR list:\"nix-dev\" OR to:\"emacs-devel\"")))
+
+(use-package mml
+  :defer t
+  :init
+  (progn
+    ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
+    (defun my:mml-attach-file--go-to-eob (orig-fun &rest args)
+      "Go to the end of buffer before attaching files."
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char (point-max))
+          (apply orig-fun args))))
+
+    (advice-add 'mml-attach-file :around #'my:mml-attach-file--go-to-eob)))
+
+(use-package message
+  :defer t
+  :config
+  (progn
+    ;;; The following make sure to use the right profile when sending
+    ;;; the message (i.e., when pressing C-c C-c in message-mode).
+    ;;; It's better to set the profile just before sending to be sure
+    ;;; to use the profile related to the From: message field).
+    (defun my:message-send-and-exit (&optional arg)
+      "Set profile according to From field.
+Designed to be called before `message-send-and-exit'."
+      (profile-set-profile-from-message-from-field))
+    (advice-add #'message-send-and-exit
+                :before
+                #'my:message-send-and-exit)))
+
+(use-package image
+  :config
+  (imagemagick-register-types))
+
+(use-package paredit
+  :diminish paredit-mode
+  :bind (:map paredit-mode-map
+              ("M-s" . nil))
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook #'enable-paredit-mode))
+  :config
+  (progn
+    (with-eval-after-load "eldoc"
+      (eldoc-add-command 'paredit-backward-delete 'paredit-close-round))))
+
+(use-package autorevert
+  :defer t
+  :diminish auto-revert-mode)
+
+(use-package smartscan
+  :defer t
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'smartscan-mode)
+    (add-hook 'pillar-mode-hook 'smartscan-mode)))
+
+(use-package zoom-frm
+  :bind (("C-x C-+" . zoom-in/out)
+         ("C-x C--" . zoom-in/out)
+         ("C-x C-=" . zoom-in/out)
+         ("C-x C-0" . zoom-in/out)
+         ("<C-mouse-4>" . zoom-in)
+         ("<C-mouse-5>" . zoom-out)))
+
+(use-package visible-mark
+  :config
+  (progn
+    (global-visible-mark-mode 1)))
+
+(use-package paren-face
+  :init
+  (progn
+    (global-paren-face-mode)))
+
+(use-package help
+  :bind (:map help-map
+              ("C-v" . find-variable)
+              ("C-k" . find-function-on-key)
+              ("C-f" . find-function)
+              ("C-l" . find-library)))
+
+(use-package anzu
+  :diminish anzu-mode
+  :init
+  (progn
+    (global-anzu-mode +1)
+    (global-set-key [remap query-replace] 'anzu-query-replace)
+    (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+    (define-key isearch-mode-map [remap isearch-query-replace] #'anzu-isearch-query-replace)
+    (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)))
+
+(use-package aggressive-indent
+  :diminish aggressive-indent-mode
+  :config
+  (progn
+    (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+    (add-hook 'lisp-mode-hook #'aggressive-indent-mode)))
+
+(use-package helm
+  :diminish helm-mode
+  :bind (("M-x"     . helm-M-x)
+         ("M-y"     . helm-show-kill-ring)
+         ("C-x b"   . helm-mini)
+         ("C-x C-f" . helm-find-files)
+         ("C-x d"   . helm-find-files)
+         ("M-i"     . helm-imenu)
+         ("C-h SPC" . helm-all-mark-rings)
+         ("C-:"     . helm-eval-expression-with-eldoc)
+         :map helm-map
+         ("<tab>"   . helm-execute-persistent-action)
+         ("C-i"     . helm-execute-persistent-action)
+         ("C-z"     . helm-select-action)
+         ("<S-left>"  . helm-beginning-of-buffer)
+         ("<S-right>" . helm-end-of-buffer)
+         :map dired-mode-map ;; helm-imenu doesn't work with dired
+         ("M-i"     . imenu))
+  :init
+  (progn
+    (require 'helm-config))
+  :config
+  (progn
+    (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+          helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
+          helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+          helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+          helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+          helm-ff-file-name-history-use-recentf t)
+
+    (with-eval-after-load "eshell"
+      (require 'helm-eshell))
+
+    (with-eval-after-load "projectile"
+      (require 'helm-projectile))
+
+    (use-package helm-descbinds)
+
+    (helm-descbinds-mode)
+    (helm-mode 1)))
+
+(use-package password-store
+  :config
+  (progn
+    (setq password-store-password-length 16)))
+
+(use-package auth-password-store
+  :demand t
+  :load-path "packages/auth-password-store"
+  :init
+  (progn
+    (setq auth-sources '(password-store))))
+
+(use-package ace-window
+  :bind* (("M-o" . ace-window))
+  :config
+  (progn
+    ;; Use same keys for both ace-window and avy
+    (setq aw-keys avy-keys)))
+
+(use-package avy
+  :bind* (("C-," . avy-goto-char-2))
+  ;; dont :bind* this as this would override `M-g` in Projectile
+  ;; (helm-projectile-vc):
+  :bind (("M-g g" . avy-goto-line))
+  :init
+  (progn
+    ;; keys under my fingers (blue keys on my Kinesis Advantage)
+    (setq avy-keys '(?a ?s  ?d  ?f  ?j  ?k  ?l  59 32))))
+
+(use-package outline
+  :diminish outline-minor-mode)
+
+(use-package beginend
+  :diminish (beginend-dired-mode beginend-message-mode)
+  :load-path "packages/beginend"
+  :config
+  (progn
+    (beginend-setup-all)))
+
+(use-package vdirel
+  :load-path "packages/vdirel"
+  :bind (("C-. c" . vdirel-helm-select-email)))
+
+(use-package help
+  :defer t
+  :config
+  (progn
+    (defun my:revert-buffer-no-confirm (&optional ignore-auto)
+      "Revert current buffer without asking."
+      (interactive (list (not current-prefix-arg)))
+      (revert-buffer ignore-auto t nil))
+    ;; Make sure `g' reverts buffer without confirmation
+    (bind-key (vector 'remap 'revert-buffer)
+              #'my:revert-buffer-no-confirm
+              help-mode-map)))
+
+(use-package nameless
+  :diminish nameless-mode
+  :config
+  (progn
+    (add-hook 'emacs-lisp-mode-hook #'nameless-mode)))
+
+(defun occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))
+
+(use-package beacon
+  :diminish beacon-mode
+  :init
+  (progn
+    (beacon-mode))
+  :config
+  (progn
+    ;; don't blink in notmuch-search, it's both slow and ugly
+    (add-to-list 'beacon-dont-blink-commands #'notmuch-search)))
+
+(use-package subword
+  :diminish subword-mode)
+
+(use-package company
+  :diminish company-mode
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook #'company-mode)))
+
+(use-package widgetjs
+  :diminish widgetjs-mode
+  :load-path "packages/emacs-js/widgetjs")
+
+(add-to-list 'load-path "~/.emacs.d/packages/amd-mode")
+(add-to-list 'load-path "~/.emacs.d/packages/gulp-task-runner")
+
+(use-package emacs-js
+  :diminish (js2-refactor-mode js2-minor-mode amd-mode js-lint-mode tern-mode)
+  :load-path "packages/emacs-js"
+  :config
+  (progn
+    (use-package monitor-setup)
+    (setenv "PATH" (concat (getenv "PATH") ":/home/cassou/node_modules/.bin"))
+    (add-to-list 'exec-path "/home/cassou/node_modules/.bin")))
+
+(use-package ftgp
+  :load-path "packages/ftgp")
+
+(use-package jabber
+  :disabled t
+  :bind
+  (("C-. j c" . jabber-connect-all)
+   ("C-. j d" . jabber-disconnect)
+   ("C-. j r" . jabber-switch-to-roster-buffer)
+   ("C-. j j" . jabber-chat-with)
+   ("C-. j l" . jabber-activity-switch-to)
+   ("C-. j a" . jabber-send-away-presence)
+   ("C-. j o" . jabber-send-default-presence)
+   ("C-. j x" . jabber-send-xa-presence)
+   ("C-. j p" . jabber-send-presence))
+  :init
+  (progn
+    (defun my/jabber-start ()
+      (interactive)
+      (require 'jabber)
+      (setq jabber-account-list
+            `(("damien@cassou.me"
+               (:password . ,(password-store-get "ldn-fai.net")))))
+      (add-hook 'jabber-post-connect-hooks #'jabber-autoaway-start)
+      (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
+
+      ;; Override jabber.el global key
+      (bind-key "C-x C-j" #'dired-jump)
+
+      (jabber-connect-all))))
 
 ;; (use-package slack
 ;;   :commands (slack-start)
@@ -1127,63 +1148,58 @@ are visible."
 ;;      :token (auth-pass-get "token" "ftgp/slack.com")
 ;;      :subscribed-channels '(general development french_fuckers stockholm-food teamcity))))
 
-;; (use-package diff-hl
-;;   :ensure t
-;;   :init
-;;   (progn
-;;     (add-hook 'prog-mode-hook #'diff-hl-mode)))
+(use-package diff-hl
+  :init
+  (progn
+    (add-hook 'prog-mode-hook #'diff-hl-mode)))
 
-;; (use-package yasnippet
-;;   :ensure t
-;;   :diminish yas-minor-mode
-;;   :config
-;;   (progn
-;;     (add-to-list 'yas-snippet-dirs "~/.emacs.d/packages/yasnippet-snippets")
-;;     (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
-;;     (yas-reload-all)))
+(use-package yasnippet
+  :diminish yas-minor-mode
+  :config
+  (progn
+    (add-to-list 'yas-snippet-dirs "~/.emacs.d/packages/yasnippet-snippets")
+    (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
+    (yas-reload-all)))
 
-;; (use-package json-mode
-;;   :ensure t
-;;   :config
-;;   (progn
-;;     (setq indent-tabs-mode nil)
-;;     (setq json-reformat:indent-width 2)))
+(use-package json-mode
+  :config
+  (progn
+    (setq indent-tabs-mode nil)
+    (setq json-reformat:indent-width 2)))
 
-;; (use-package ws-butler
-;;   :ensure t
-;;   :diminish ws-butler-mode
-;;   :init
-;;   (progn
-;;     (add-hook 'prog-mode-hook #'ws-butler-mode)))
+(use-package ws-butler
+  :diminish ws-butler-mode
+  :init
+  (progn
+    (add-hook 'prog-mode-hook #'ws-butler-mode)))
 
-;; (use-package workflow
-;;   :demand t
-;;   :init
-;;   (progn
-;;     (defun my/mount-backup-disk (&optional unmount)
-;;       "Mount backup disk.  Unmount if UNMOUNT is t.
-;; Interactively, unmount when prefix argument."
-;;       (interactive "P")
-;;       (let ((script (expand-file-name "~/Documents/configuration/scripts/lacie-mount.sh")))
-;;         (require 'em-term)
-;;         (if unmount
-;;             (eshell-exec-visual script "-1")
-;;           (eshell-exec-visual script))))
+(use-package workflow
+  :demand t
+  :init
+  (progn
+    (defun my/mount-backup-disk (&optional unmount)
+      "Mount backup disk.  Unmount if UNMOUNT is t.
+Interactively, unmount when prefix argument."
+      (interactive "P")
+      (let ((script (expand-file-name "~/Documents/configuration/scripts/lacie-mount.sh")))
+        (require 'em-term)
+        (if unmount
+            (eshell-exec-visual script "-1")
+          (eshell-exec-visual script))))
 
-;;     (defun my/unmount-backup-disk ()
-;;       "Unmount backup disk."
-;;       (interactive)
-;;       (my/mount-backup-disk t)))
-;;   :config
-;;   (progn
-;;     (add-hook 'workflow-hello-hook #'my/mount-backup-disk)
-;;     (add-hook 'workflow-goodbye-hook #'my/unmount-backup-disk)))
+    (defun my/unmount-backup-disk ()
+      "Unmount backup disk."
+      (interactive)
+      (my/mount-backup-disk t)))
+  :config
+  (progn
+    (add-hook 'workflow-hello-hook #'my/mount-backup-disk)
+    (add-hook 'workflow-goodbye-hook #'my/unmount-backup-disk)))
 
-;; (use-package editorconfig
-;;   :ensure t
-;;   :init
-;;   (add-hook 'prog-mode-hook #'editorconfig-mode)
-;;   (add-hook 'text-mode-hook #'editorconfig-mode))
+(use-package editorconfig
+  :init
+  (add-hook 'prog-mode-hook #'editorconfig-mode)
+  (add-hook 'text-mode-hook #'editorconfig-mode))
 
 ;;; Emacs Configuration
 (custom-set-faces
